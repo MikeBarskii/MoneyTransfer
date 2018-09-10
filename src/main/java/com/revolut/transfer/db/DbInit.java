@@ -1,18 +1,15 @@
 package com.revolut.transfer.db;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.revolut.transfer.dao.AccountDao;
-import com.revolut.transfer.dao.CustomerDao;
-import com.revolut.transfer.dao.impl.AccountDaoImpl;
-import com.revolut.transfer.dao.impl.CustomerDaoImpl;
 import com.revolut.transfer.model.Account;
 import com.revolut.transfer.model.Customer;
 import com.revolut.transfer.model.Transfer;
 import com.revolut.transfer.service.AccountService;
 import com.revolut.transfer.service.CustomerService;
-import com.revolut.transfer.service.impl.AccountServiceImpl;
-import com.revolut.transfer.service.impl.CustomerServiceImpl;
+import com.revolut.transfer.util.AppInjector;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -39,7 +36,7 @@ public class DbInit {
 
     public static void initEntityTables(ConnectionSource connectionSource) throws SQLException {
         createEntityTables(connectionSource);
-        fillEntityTablesByDefault(connectionSource);
+        fillEntityTablesByDefault();
     }
 
     private static void createEntityTables(ConnectionSource connectionSource) throws SQLException {
@@ -47,20 +44,20 @@ public class DbInit {
             TableUtils.createTableIfNotExists(connectionSource, entityClass);
     }
 
-    private static void fillEntityTablesByDefault(ConnectionSource connectionSource) throws SQLException {
-        fillCustomerTableByDefault(connectionSource);
-        fillAccountTableByDefault(connectionSource);
+    private static void fillEntityTablesByDefault() throws SQLException {
+        fillCustomerTableByDefault();
+        fillAccountTableByDefault();
     }
 
-    private static void fillCustomerTableByDefault(ConnectionSource connectionSource) throws SQLException {
-        CustomerDao customerDao = new CustomerDaoImpl(connectionSource);
-        CustomerService customerService = new CustomerServiceImpl(customerDao);
+    private static void fillCustomerTableByDefault() throws SQLException {
+        Injector injector = Guice.createInjector(new AppInjector());
+        CustomerService customerService = injector.getInstance(CustomerService.class);
         customerService.addCustomers(DEFAULT_CUSTOMERS);
     }
 
-    private static void fillAccountTableByDefault(ConnectionSource connectionSource) throws SQLException {
-        AccountDao accountDao = new AccountDaoImpl(connectionSource);
-        AccountService accountService = new AccountServiceImpl(accountDao);
+    private static void fillAccountTableByDefault() throws SQLException {
+        Injector injector = Guice.createInjector(new AppInjector());
+        AccountService accountService = injector.getInstance(AccountService.class);
         accountService.addAccounts(DEFAULT_ACCOUNTS);
     }
 }

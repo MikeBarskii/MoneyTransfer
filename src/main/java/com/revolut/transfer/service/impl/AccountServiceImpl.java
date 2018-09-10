@@ -1,5 +1,6 @@
 package com.revolut.transfer.service.impl;
 
+import com.google.inject.Inject;
 import com.revolut.transfer.dao.AccountDao;
 import com.revolut.transfer.model.Account;
 import com.revolut.transfer.service.AccountService;
@@ -10,6 +11,7 @@ import java.util.Collection;
 public class AccountServiceImpl implements AccountService {
     private AccountDao accountDao;
 
+    @Inject
     public AccountServiceImpl(AccountDao accountDao) {
         this.accountDao = accountDao;
     }
@@ -32,6 +34,17 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void addAccount(Account account) throws SQLException {
         accountDao.create(account);
+    }
+
+    @Override
+    public void updateAccounts(Collection<Account> accounts) throws SQLException {
+        for (Account account : accounts)
+            updateAccount(account);
+    }
+
+    @Override
+    public void updateAccount(Account account) throws SQLException {
+        accountDao.update(account);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.revolut.transfer.service.impl;
 
+import com.google.inject.Inject;
 import com.revolut.transfer.dao.CustomerDao;
 import com.revolut.transfer.model.Customer;
 import com.revolut.transfer.service.CustomerService;
@@ -11,6 +12,7 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
     private CustomerDao customerDao;
 
+    @Inject
     public CustomerServiceImpl(CustomerDao customerDao) {
         this.customerDao = customerDao;
     }

@@ -1,7 +1,7 @@
 package com.revolut.transfer.dao.impl;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
-import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.revolut.transfer.dao.CustomerDao;
 import com.revolut.transfer.model.Customer;
 
@@ -9,8 +9,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class CustomerDaoImpl extends BaseDaoImpl<Customer, Long> implements CustomerDao {
-    public CustomerDaoImpl(ConnectionSource connectionSource) throws SQLException {
-        super(connectionSource, Customer.class);
+
+    public CustomerDaoImpl() throws SQLException {
+        super(new JdbcPooledConnectionSource("jdbc:h2:mem:moneytransfer"), Customer.class);
     }
 
     @Override

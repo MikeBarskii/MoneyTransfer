@@ -15,6 +15,10 @@ public interface AccountService {
 
     void addAccount(Account account) throws SQLException;
 
+    void updateAccounts(Collection<Account> accounts) throws SQLException;
+
+    void updateAccount(Account account) throws SQLException;
+
     void deleteAccount(Account account) throws SQLException;
 
     void deleteAccount(long id) throws SQLException;

@@ -1,5 +1,7 @@
 package com.revolut.transfer.service;
 
+import com.revolut.transfer.exception.AccountDoesntHaveEnoughMoney;
+import com.revolut.transfer.exception.TransferTheSameAccountException;
 import com.revolut.transfer.model.Transfer;
 
 import java.sql.SQLException;
@@ -9,9 +11,9 @@ public interface TransferService {
 
     Collection<Transfer> getTransfers() throws SQLException;
 
-    Transfer getTransfer(long transferId);
+    Transfer getTransfer(long transferId) throws SQLException;
 
-    void addTransfers(Collection<Transfer> transfers) throws SQLException;
+    void createTransfers(Collection<Transfer> transfers) throws SQLException;
 
-    void addTransfer(Transfer transfer) throws SQLException;
+    void createTransfer(Transfer transfer) throws SQLException, TransferTheSameAccountException, AccountDoesntHaveEnoughMoney;
 }
