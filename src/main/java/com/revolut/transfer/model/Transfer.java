@@ -1,14 +1,35 @@
 package com.revolut.transfer.model;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
+import java.math.BigDecimal;
+
+@DatabaseTable(tableName = "transfers")
 public class Transfer {
-    private long id;
-    private Account sender;
-    private Account receiver;
+
+    @DatabaseField(generatedId = true)
+    private transient long id;
+
+    @DatabaseField(canBeNull = false)
+    private long senderId;
+
+    @DatabaseField(canBeNull = false)
+    private long receiverId;
+
+    @DatabaseField(canBeNull = false)
     private BigDecimal amount;
-    private ZonedDateTime time;
+
+    //private transient ZonedDateTime time;
+
+    public Transfer() {
+    }
+
+    public Transfer(long senderId, long receiverId, BigDecimal amount) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.amount = amount;
+    }
 
     public long getId() {
         return id;
@@ -18,20 +39,20 @@ public class Transfer {
         this.id = id;
     }
 
-    public Account getSender() {
-        return sender;
+    public long getSenderId() {
+        return senderId;
     }
 
-    public void setSender(Account sender) {
-        this.sender = sender;
+    public void setSenderId(long senderId) {
+        this.senderId = senderId;
     }
 
-    public Account getReceiver() {
-        return receiver;
+    public long getReceiverId() {
+        return receiverId;
     }
 
-    public void setReceiver(Account receiver) {
-        this.receiver = receiver;
+    public void setReceiverId(long receiverId) {
+        this.receiverId = receiverId;
     }
 
     public BigDecimal getAmount() {
@@ -42,20 +63,22 @@ public class Transfer {
         this.amount = amount;
     }
 
-    public ZonedDateTime getTime() {
-        return time;
-    }
+    //public ZonedDateTime getTime() {
+       // return time;
+    //}
 
-    public void setTime(ZonedDateTime time) {
-        this.time = time;
-    }
+    //public void setTime(ZonedDateTime time) {
+        //this.time = time;
+    //}
 
-    public Transfer(long id, Account sender, Account receiver, BigDecimal amount, ZonedDateTime time) {
-        this.id = id;
-        this.sender = sender;
-        this.receiver = receiver;
-        this.amount = amount;
-        this.time = time;
+    @Override
+    public String toString() {
+        return "Transfer{" +
+                "id=" + id +
+                ", senderId=" + senderId +
+                ", receiverId=" + receiverId +
+                ", amount=" + amount +
+                //", time=" + time +
+                '}';
     }
-
 }

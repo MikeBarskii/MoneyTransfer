@@ -1,11 +1,29 @@
 package com.revolut.transfer.model;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.math.BigDecimal;
 
+@DatabaseTable(tableName = "accounts")
 public class Account {
+
+    @DatabaseField(generatedId = true)
     private long id;
+
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false)
     private Customer customer;
+
+    @DatabaseField
     private BigDecimal balance;
+
+    public Account() {
+    }
+
+    public Account(Customer customer, BigDecimal balance) {
+        this.customer = customer;
+        this.balance = balance;
+    }
 
     public long getId() {
         return id;
@@ -33,8 +51,9 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account{" +
-                "customer=" + customer +
+        return "Account {" +
+                "customer= " + customer +
+                ", currency= " +
                 '}';
     }
 }

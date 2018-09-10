@@ -4,10 +4,10 @@ import com.revolut.transfer.dao.TransferDao;
 import com.revolut.transfer.model.Transfer;
 import com.revolut.transfer.service.TransferService;
 
-import java.util.List;
+import java.sql.SQLException;
+import java.util.Collection;
 
 public class TransferServiceIml implements TransferService {
-
     private TransferDao transferDao;
 
     public TransferServiceIml(TransferDao transferDao) {
@@ -15,12 +15,22 @@ public class TransferServiceIml implements TransferService {
     }
 
     @Override
-    public Transfer getTransfer(long id) {
+    public Collection<Transfer> getTransfers() throws SQLException {
+        return transferDao.queryForAll();
+    }
+
+    @Override
+    public Transfer getTransfer(long transferId) {
         return null;
     }
 
     @Override
-    public List<Transfer> getTransfers() {
-        return null;
+    public void addTransfers(Collection<Transfer> transfers) throws SQLException {
+        transferDao.create(transfers);
+    }
+
+    @Override
+    public void addTransfer(Transfer transfer) throws SQLException {
+        transferDao.create(transfer);
     }
 }

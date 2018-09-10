@@ -15,8 +15,10 @@ public class Customer {
     @DatabaseField(canBeNull = false)
     private String surname;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(columnName = "phone_number", canBeNull = false, unique = true)
     private String phoneNumber;
+
+    @DatabaseField(unique = true)
     private String email;
 
     public Customer() {
@@ -86,8 +88,8 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "id=" + id +
+        return "Customer {" +
+                "id= " + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 '}';

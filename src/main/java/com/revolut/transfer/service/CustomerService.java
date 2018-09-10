@@ -8,9 +8,11 @@ import java.util.List;
 
 public interface CustomerService {
 
+    List<Customer> getCustomers() throws SQLException;
+
+    Customer getCustomer(long customerId) throws SQLException;
+
     void addCustomers(Collection<Customer> customers) throws SQLException;
 
     void addCustomer(Customer customer) throws SQLException;
-
-    List<Customer> getCustomers() throws SQLException;
 }

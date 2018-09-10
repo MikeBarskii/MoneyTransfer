@@ -16,6 +16,16 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public List<Customer> getCustomers() throws SQLException {
+        return customerDao.queryForAll();
+    }
+
+    @Override
+    public Customer getCustomer(long customerId) throws SQLException {
+        return customerDao.queryForId(customerId);
+    }
+
+    @Override
     public void addCustomers(Collection<Customer> customers) throws SQLException {
         customerDao.create(customers);
     }
@@ -23,11 +33,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void addCustomer(Customer customer) throws SQLException {
         customerDao.create(customer);
-    }
-
-    @Override
-    public List<Customer> getCustomers() throws SQLException {
-        return customerDao.queryForAll();
     }
 
 }

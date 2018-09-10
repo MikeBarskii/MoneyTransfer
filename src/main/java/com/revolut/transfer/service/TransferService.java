@@ -2,12 +2,16 @@ package com.revolut.transfer.service;
 
 import com.revolut.transfer.model.Transfer;
 
-import java.util.List;
+import java.sql.SQLException;
+import java.util.Collection;
 
 public interface TransferService {
 
-    Transfer getTransfer(long id);
+    Collection<Transfer> getTransfers() throws SQLException;
 
-    List<Transfer> getTransfers();
+    Transfer getTransfer(long transferId);
 
+    void addTransfers(Collection<Transfer> transfers) throws SQLException;
+
+    void addTransfer(Transfer transfer) throws SQLException;
 }

@@ -2,15 +2,22 @@ package com.revolut.transfer;
 
 import com.revolut.transfer.service.RestService;
 import com.revolut.transfer.service.impl.BaseRestService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static com.revolut.transfer.util.JsonUtil.json;
-import static spark.Spark.get;
+import java.sql.SQLException;
 
 public class Application {
-    public static void main(String[] args) {
-        RestService service = new BaseRestService(4567);
-        service.start();
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
 
-        get("/hello/:name", (req, res) -> "Hello, " + req.params(":name"), json());
+    public static void main(String[] args) {
+
+        RestService service = new BaseRestService(4040);
+        try {
+            service.start();
+        } catch (SQLException e) {
+            log.error("An exception occurred!");
+            e.printStackTrace();
+        }
     }
 }
