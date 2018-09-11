@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class CustomerServiceImpl implements CustomerService {
-    private CustomerDao customerDao;
+    private final CustomerDao customerDao;
 
     @Inject
     public CustomerServiceImpl(CustomerDao customerDao) {

@@ -8,7 +8,7 @@ public enum Currency {
     UAH(28.27),
     USD(1);
 
-    private double rate;
+    private final double rate;
 
     Currency(double rate) {
         this.rate = rate;

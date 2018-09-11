@@ -17,7 +17,7 @@ import java.util.Collection;
 
 public class TransferServiceIml implements TransferService {
     private TransferDao transferDao;
-    private AccountService accountService;
+    private final AccountService accountService;
 
     @Inject
     public TransferServiceIml(TransferDao transferDao, AccountService accountService) {

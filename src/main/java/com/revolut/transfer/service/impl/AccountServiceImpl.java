@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 public class AccountServiceImpl implements AccountService {
-    private AccountDao accountDao;
+    private final AccountDao accountDao;
 
     @Inject
     public AccountServiceImpl(AccountDao accountDao) {

@@ -12,8 +12,13 @@ public class TransferController {
 
     @Inject
     public TransferController(final TransferService transferService) {
-        path("/api/transfers", () -> {
+        path("/transfers", () -> {
             get("/", (req, res) -> transferService.getTransfers());
+
+            get("/:id", (req, res) -> {
+                long transferId = Long.valueOf(req.params(":id"));
+                return transferService.getTransfer(transferId);
+            });
 
             post("/create", APPLICATION_JSON_TYPE, (req, res) -> {
                 Transfer transfer = JsonUtil.convertToTransfer(req.body());
