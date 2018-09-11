@@ -15,5 +15,5 @@ public interface TransferService {
 
     void createTransfers(Collection<Transfer> transfers) throws SQLException;
 
-    void createTransfer(Transfer transfer) throws SQLException, TransferTheSameAccountException, AccountDoesntHaveEnoughMoney;
+    Transfer createTransfer(Transfer transfer) throws SQLException, TransferTheSameAccountException, AccountDoesntHaveEnoughMoney;
 }

@@ -68,7 +68,6 @@ public class Transfer {
                 ", senderId=" + senderId +
                 ", receiverId=" + receiverId +
                 ", amount=" + amount +
-                //", time=" + time +
                 '}';
     }
 }

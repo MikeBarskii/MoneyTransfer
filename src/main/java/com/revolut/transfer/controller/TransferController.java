@@ -5,31 +5,27 @@ import com.revolut.transfer.model.Transfer;
 import com.revolut.transfer.service.TransferService;
 import com.revolut.transfer.util.JsonUtil;
 
+import static com.revolut.transfer.util.JsonUtil.json;
 import static spark.Spark.*;
 
 public class TransferController {
-    private static final String APPLICATION_JSON_TYPE = "application/json";
 
     @Inject
     public TransferController(final TransferService transferService) {
         path("/transfers", () -> {
-            get("/", (req, res) -> transferService.getTransfers());
+            get("/", (req, res) -> transferService.getTransfers(), json());
 
             get("/:id", (req, res) -> {
                 long transferId = Long.valueOf(req.params(":id"));
                 return transferService.getTransfer(transferId);
-            });
+            }, json());
 
-            post("/create", APPLICATION_JSON_TYPE, (req, res) -> {
+            post("/create", (req, res) -> {
                 Transfer transfer = JsonUtil.convertToTransfer(req.body());
-                transferService.createTransfer(transfer);
-                return res;
-            });
-        });
+                return transferService.createTransfer(transfer);
+            }, json());
 
-        notFound((req, res) -> {
-            res.type("application/json");
-            return "{\"code\":\"404\",\"message\":\"Not Found\"}";
+            after("/*", (req, res) -> res.type("application/json"));
         });
     }
 

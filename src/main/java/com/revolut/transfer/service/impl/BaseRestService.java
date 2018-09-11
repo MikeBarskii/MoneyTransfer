@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.j256.ormlite.support.ConnectionSource;
 import com.revolut.transfer.controller.AccountController;
 import com.revolut.transfer.controller.CustomerController;
+import com.revolut.transfer.controller.ExceptionController;
 import com.revolut.transfer.controller.TransferController;
 import com.revolut.transfer.dao.AccountDao;
 import com.revolut.transfer.dao.CustomerDao;
@@ -56,5 +57,7 @@ public class BaseRestService implements RestService {
         injector.getInstance(AccountController.class);
         injector.getInstance(AccountDao.class);
         injector.getInstance(AccountServiceImpl.class);
+
+        injector.getInstance(ExceptionController.class);
     }
 }

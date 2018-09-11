@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 public class TransferServiceIml implements TransferService {
-    private TransferDao transferDao;
+    private final TransferDao transferDao;
     private final AccountService accountService;
 
     @Inject
@@ -40,7 +40,7 @@ public class TransferServiceIml implements TransferService {
     }
 
     @Override
-    public void createTransfer(Transfer transfer) throws SQLException,
+    public Transfer createTransfer(Transfer transfer) throws SQLException,
             TransferTheSameAccountException, AccountDoesntHaveEnoughMoney {
         if (transfer.getSenderId() == transfer.getReceiverId()) {
             throw new TransferTheSameAccountException();
@@ -54,7 +54,7 @@ public class TransferServiceIml implements TransferService {
         }
 
         changeBalanceForAccounts(sender, receiver, transfer.getAmount());
-        transferDao.create(transfer);
+        return transferDao.createIfNotExists(transfer);
     }
 
     private void changeBalanceForAccounts(Account sender, Account receiver, BigDecimal amount) throws SQLException {
