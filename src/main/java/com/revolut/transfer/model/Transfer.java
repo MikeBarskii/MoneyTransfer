@@ -20,8 +20,6 @@ public class Transfer {
     @DatabaseField(canBeNull = false)
     private BigDecimal amount;
 
-    //private transient ZonedDateTime time;
-
     public Transfer() {
     }
 
@@ -62,14 +60,6 @@ public class Transfer {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-
-    //public ZonedDateTime getTime() {
-       // return time;
-    //}
-
-    //public void setTime(ZonedDateTime time) {
-        //this.time = time;
-    //}
 
     @Override
     public String toString() {

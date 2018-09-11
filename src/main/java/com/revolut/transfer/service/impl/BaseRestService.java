@@ -2,7 +2,6 @@ package com.revolut.transfer.service.impl;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.revolut.transfer.controller.AccountController;
 import com.revolut.transfer.controller.CustomerController;
@@ -21,19 +20,11 @@ import java.sql.SQLException;
 
 public class BaseRestService implements RestService {
     private static final Logger log = LoggerFactory.getLogger(BaseRestService.class);
-    private static final String JDBC_URL = "jdbc:h2:mem:moneytransfer";
 
     private final int port;
-    private ConnectionSource connectionSource;
 
     public BaseRestService(int port) {
         this.port = port;
-        try {
-            connectionSource = new JdbcPooledConnectionSource(JDBC_URL);
-            DbInit.initEntityTables(connectionSource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -41,11 +32,19 @@ public class BaseRestService implements RestService {
         Spark.port(port);
         initInjectorInstances();
 
+        try {
+            DbInit.initEntityTables();
+        } catch (SQLException e) {
+            log.error("Something went wrong");
+            e.printStackTrace();
+        }
         log.info("The application is launched. Port: {}", port);
     }
 
     private void initInjectorInstances() {
         Injector injector = Guice.createInjector(new AppInjector());
+        injector.getInstance(ConnectionSource.class);
+
         injector.getInstance(TransferController.class);
         injector.getInstance(TransferDao.class);
         injector.getInstance(TransferServiceIml.class);

@@ -13,7 +13,7 @@ public class TransferController {
     @Inject
     public TransferController(final TransferService transferService) {
         path("/api/transfers", () -> {
-            get("", (req, res) -> transferService.getTransfers());
+            get("/", (req, res) -> transferService.getTransfers());
 
             post("/create", APPLICATION_JSON_TYPE, (req, res) -> {
                 Transfer transfer = JsonUtil.convertToTransfer(req.body());
@@ -21,5 +21,11 @@ public class TransferController {
                 return res;
             });
         });
+
+        notFound((req, res) -> {
+            res.type("application/json");
+            return "{\"code\":\"404\",\"message\":\"Not Found\"}";
+        });
     }
+
 }

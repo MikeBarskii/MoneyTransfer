@@ -6,13 +6,13 @@ import com.revolut.transfer.exception.AccountDoesntHaveEnoughMoney;
 import com.revolut.transfer.exception.TransferTheSameAccountException;
 import com.revolut.transfer.model.Account;
 import com.revolut.transfer.model.Transfer;
+import com.revolut.transfer.model.enums.Currency;
 import com.revolut.transfer.service.AccountService;
 import com.revolut.transfer.service.TransferService;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 public class TransferServiceIml implements TransferService {
@@ -40,7 +40,8 @@ public class TransferServiceIml implements TransferService {
     }
 
     @Override
-    public void createTransfer(Transfer transfer) throws SQLException, TransferTheSameAccountException, AccountDoesntHaveEnoughMoney {
+    public void createTransfer(Transfer transfer) throws SQLException,
+            TransferTheSameAccountException, AccountDoesntHaveEnoughMoney {
         if (transfer.getSenderId() == transfer.getReceiverId()) {
             throw new TransferTheSameAccountException();
         }
@@ -49,7 +50,7 @@ public class TransferServiceIml implements TransferService {
         Account receiver = accountService.getAccount(transfer.getReceiverId());
 
         if (!isAccountContainEnoughMoney(sender, transfer.getAmount())) {
-            throw new AccountDoesntHaveEnoughMoney(sender);
+            throw new AccountDoesntHaveEnoughMoney(sender, transfer.getAmount());
         }
 
         changeBalanceForAccounts(sender, receiver, transfer.getAmount());
@@ -57,13 +58,23 @@ public class TransferServiceIml implements TransferService {
     }
 
     private void changeBalanceForAccounts(Account sender, Account receiver, BigDecimal amount) throws SQLException {
-        BigDecimal newSenderBalance = sender.getBalance().subtract(amount);
+        changeSenderBalance(sender, amount);
+
+        double exchangeRate = Currency.exchangeRate(sender.getCurrency(), receiver.getCurrency());
+        changeReceiverBalance(receiver, amount, exchangeRate);
+    }
+
+    private void changeSenderBalance(Account sender, BigDecimal amount) throws SQLException {
+        BigDecimal newSenderBalance = sender.getBalance().subtract(amount).setScale(2, RoundingMode.CEILING);
         sender.setBalance(newSenderBalance);
+        accountService.updateAccount(sender);
+    }
 
-        BigDecimal newReceiverBalance = receiver.getBalance().add(amount);
+    private void changeReceiverBalance(Account receiver, BigDecimal amount, double exchangeRate) throws SQLException {
+        BigDecimal amountAfterExchange = amount.multiply(BigDecimal.valueOf(exchangeRate));
+        BigDecimal newReceiverBalance = receiver.getBalance().add(amountAfterExchange).setScale(2, RoundingMode.CEILING);
         receiver.setBalance(newReceiverBalance);
-
-        accountService.updateAccounts(new ArrayList<>(Arrays.asList(sender, receiver)));
+        accountService.updateAccount(receiver);
     }
 
     private boolean isAccountContainEnoughMoney(Account account, BigDecimal amount) {

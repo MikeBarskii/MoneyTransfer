@@ -7,6 +7,7 @@ import com.j256.ormlite.table.TableUtils;
 import com.revolut.transfer.model.Account;
 import com.revolut.transfer.model.Customer;
 import com.revolut.transfer.model.Transfer;
+import com.revolut.transfer.model.enums.Currency;
 import com.revolut.transfer.service.AccountService;
 import com.revolut.transfer.service.CustomerService;
 import com.revolut.transfer.util.AppInjector;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class DbInit {
     private static final List<Class> ENTITY_TABLES = Arrays.asList(Customer.class, Account.class, Transfer.class);
+
     private static final List<Customer> DEFAULT_CUSTOMERS = Arrays.asList(
             new Customer("Mike", "Barskiy", "+79818403837", "mikebarskiy@gmail.com"),
             new Customer("Ekaterina", "Khodosova", "+79818257940", "khodosova@mail.ru"),
@@ -27,19 +29,22 @@ public class DbInit {
     );
 
     private static final List<Account> DEFAULT_ACCOUNTS = Arrays.asList(
-            new Account(DEFAULT_CUSTOMERS.get(0), BigDecimal.valueOf(10_000)),
-            new Account(DEFAULT_CUSTOMERS.get(1), BigDecimal.valueOf(25_000)),
-            new Account(DEFAULT_CUSTOMERS.get(2), BigDecimal.valueOf(50_000)),
-            new Account(DEFAULT_CUSTOMERS.get(3), BigDecimal.valueOf(100_000)),
-            new Account(DEFAULT_CUSTOMERS.get(4), BigDecimal.valueOf(250_000))
+            new Account(DEFAULT_CUSTOMERS.get(0), BigDecimal.valueOf(10_000), Currency.AUD),
+            new Account(DEFAULT_CUSTOMERS.get(1), BigDecimal.valueOf(25_000), Currency.USD),
+            new Account(DEFAULT_CUSTOMERS.get(2), BigDecimal.valueOf(50_000), Currency.USD),
+            new Account(DEFAULT_CUSTOMERS.get(3), BigDecimal.valueOf(100_000), Currency.RUB),
+            new Account(DEFAULT_CUSTOMERS.get(4), BigDecimal.valueOf(250_000), Currency.CAD)
     );
 
-    public static void initEntityTables(ConnectionSource connectionSource) throws SQLException {
-        createEntityTables(connectionSource);
+    public static void initEntityTables() throws SQLException {
+        createEntityTables();
         fillEntityTablesByDefault();
     }
 
-    private static void createEntityTables(ConnectionSource connectionSource) throws SQLException {
+    private static void createEntityTables() throws SQLException {
+        Injector injector = Guice.createInjector(new AppInjector());
+        ConnectionSource connectionSource = injector.getInstance(ConnectionSource.class);
+
         for (Class<?> entityClass : ENTITY_TABLES)
             TableUtils.createTableIfNotExists(connectionSource, entityClass);
     }

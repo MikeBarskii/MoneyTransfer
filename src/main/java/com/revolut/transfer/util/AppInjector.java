@@ -1,12 +1,14 @@
 package com.revolut.transfer.util;
 
 import com.google.inject.AbstractModule;
+import com.j256.ormlite.support.ConnectionSource;
 import com.revolut.transfer.dao.AccountDao;
 import com.revolut.transfer.dao.CustomerDao;
 import com.revolut.transfer.dao.TransferDao;
 import com.revolut.transfer.dao.impl.AccountDaoImpl;
 import com.revolut.transfer.dao.impl.CustomerDaoImpl;
 import com.revolut.transfer.dao.impl.TransferDaoImpl;
+import com.revolut.transfer.db.JdbcConnectionSource;
 import com.revolut.transfer.service.AccountService;
 import com.revolut.transfer.service.CustomerService;
 import com.revolut.transfer.service.TransferService;
@@ -25,6 +27,8 @@ public class AppInjector extends AbstractModule {
 
         bind(CustomerService.class).to(CustomerServiceImpl.class);
         bind(CustomerDao.class).to(CustomerDaoImpl.class);
+
+        bind(ConnectionSource.class).to(JdbcConnectionSource.class);
     }
 
 }
