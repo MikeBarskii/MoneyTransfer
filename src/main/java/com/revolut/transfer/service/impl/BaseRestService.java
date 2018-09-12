@@ -13,16 +13,19 @@ import com.revolut.transfer.dao.TransferDao;
 import com.revolut.transfer.db.DbInit;
 import com.revolut.transfer.service.RestService;
 import com.revolut.transfer.util.AppInjector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import spark.Spark;
 
 import java.sql.SQLException;
 
 public class BaseRestService implements RestService {
-    private static final Logger log = LoggerFactory.getLogger(BaseRestService.class);
+    private static final Logger log = Logger.getLogger(BaseRestService.class);
+    private static final int DEFAULT_PORT = 4567;
 
-    private final int port;
+    private int port = DEFAULT_PORT;
+
+    public BaseRestService() {
+    }
 
     public BaseRestService(int port) {
         this.port = port;
@@ -39,7 +42,12 @@ public class BaseRestService implements RestService {
             log.error("Something went wrong");
             e.printStackTrace();
         }
-        log.info("The application is launched. Port: {}", port);
+        log.info("The application is launched. Port: " + port);
+    }
+
+    @Override
+    public void stop() {
+        Spark.stop();
     }
 
     private void initInjectorInstances() {
