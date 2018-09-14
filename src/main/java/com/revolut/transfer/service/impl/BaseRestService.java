@@ -7,19 +7,18 @@ import com.revolut.transfer.controller.AccountController;
 import com.revolut.transfer.controller.CustomerController;
 import com.revolut.transfer.controller.ExceptionController;
 import com.revolut.transfer.controller.TransferController;
-import com.revolut.transfer.dao.AccountDao;
-import com.revolut.transfer.dao.CustomerDao;
-import com.revolut.transfer.dao.TransferDao;
 import com.revolut.transfer.db.DbInit;
 import com.revolut.transfer.service.RestService;
 import com.revolut.transfer.util.AppInjector;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Spark;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class BaseRestService implements RestService {
-    private static final Logger log = Logger.getLogger(BaseRestService.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseRestService.class);
     private static final int DEFAULT_PORT = 4567;
 
     private int port = DEFAULT_PORT;
@@ -47,7 +46,21 @@ public class BaseRestService implements RestService {
 
     @Override
     public void stop() {
+        ConnectionSource connectionSource = getConnectionSource();
+
+        try {
+            connectionSource.close();
+        } catch (IOException e) {
+            log.error("Error while closing connection!");
+            e.printStackTrace();
+        }
+
         Spark.stop();
+    }
+
+    private ConnectionSource getConnectionSource() {
+        Injector injector = Guice.createInjector(new AppInjector());
+        return injector.getInstance(ConnectionSource.class);
     }
 
     private void initInjectorInstances() {
@@ -55,16 +68,8 @@ public class BaseRestService implements RestService {
         injector.getInstance(ConnectionSource.class);
 
         injector.getInstance(TransferController.class);
-        injector.getInstance(TransferDao.class);
-        injector.getInstance(TransferServiceIml.class);
-
         injector.getInstance(CustomerController.class);
-        injector.getInstance(CustomerDao.class);
-        injector.getInstance(CustomerServiceImpl.class);
-
         injector.getInstance(AccountController.class);
-        injector.getInstance(AccountDao.class);
-        injector.getInstance(AccountServiceImpl.class);
 
         injector.getInstance(ExceptionController.class);
     }

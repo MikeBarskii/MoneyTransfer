@@ -50,7 +50,7 @@ public class TransferServiceIml implements TransferService {
         Account receiver = accountService.getAccount(transfer.getReceiverId());
 
         if (!isAccountContainEnoughMoney(sender, transfer.getAmount())) {
-            throw new AccountDoesntHaveEnoughMoney(sender, transfer.getAmount());
+            throw new AccountDoesntHaveEnoughMoney(transfer.getSenderId(), transfer.getAmount());
         }
 
         changeBalanceForAccounts(sender, receiver, transfer.getAmount());
