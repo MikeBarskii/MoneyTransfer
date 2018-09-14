@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public class Transfer {
 
     @DatabaseField(generatedId = true)
-    private transient long id;
+    private long id;
 
     @DatabaseField(canBeNull = false)
     private long senderId;

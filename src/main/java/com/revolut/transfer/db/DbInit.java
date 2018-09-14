@@ -57,9 +57,7 @@ public class DbInit {
     private static void fillCustomerTableByDefault() throws SQLException {
         Injector injector = Guice.createInjector(new AppInjector());
         CustomerService customerService = injector.getInstance(CustomerService.class);
-        for (Customer customer: DEFAULT_CUSTOMERS)
-            customerService.addCustomer(customer);
-        //customerService.addCustomers(DEFAULT_CUSTOMERS);
+        customerService.addCustomers(DEFAULT_CUSTOMERS);
     }
 
     private static void fillAccountTableByDefault() throws SQLException {

@@ -1,10 +1,9 @@
-package com.revolut.transfer;
+package com.revolut.transfer.controller;
 
 import com.despegar.http.client.GetMethod;
 import com.despegar.http.client.HttpResponse;
 import com.despegar.http.client.PostMethod;
 import com.despegar.sparkjava.test.SparkServer;
-import com.google.gson.Gson;
 import com.revolut.transfer.model.Transfer;
 import com.revolut.transfer.service.RestService;
 import com.revolut.transfer.service.impl.BaseRestService;
@@ -16,7 +15,10 @@ import spark.servlet.SparkApplication;
 
 import java.math.BigDecimal;
 
-import static org.junit.Assert.*;
+import static com.revolut.transfer.util.JsonUtilInTest.convertToObject;
+import static com.revolut.transfer.util.JsonUtilInTest.toJson;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class AppControllersTest {
     private static RestService restService;
@@ -46,22 +48,41 @@ public class AppControllersTest {
     @Test
     public void testCreateTransfer() throws Exception {
         Transfer transfer = new Transfer(1, 3, BigDecimal.valueOf(100));
-        String jsonTransfer = new Gson().toJson(transfer);
-
-        PostMethod post = testServer.post("/transfers/create", jsonTransfer, false);
+        PostMethod post = testServer.post("/transfers/create", toJson(transfer), false);
         HttpResponse httpResponse = testServer.execute(post);
-        assertEquals(200, httpResponse.code());
 
-        assertArrayEquals(jsonTransfer.getBytes(), httpResponse.body());
+        Transfer transferFromServer = convertToObject(httpResponse.body(), Transfer.class);
+        assertEquals(200, httpResponse.code());
+        assertEquals(transfer.getSenderId(), transferFromServer.getSenderId());
+        assertEquals(transfer.getReceiverId(), transferFromServer.getReceiverId());
+        assertEquals(transfer.getAmount(), transferFromServer.getAmount());
+        assertNotNull(testServer.getApplication());
+    }
+
+    @Test
+    public void testCreateTransferAndGetById() throws Exception {
+        Transfer transfer = new Transfer(1, 2, BigDecimal.valueOf(150));
+        PostMethod post = testServer.post("/transfers/create", toJson(transfer), false);
+        HttpResponse httpResponseFromCreate = testServer.execute(post);
+        assertEquals(200, httpResponseFromCreate.code());
+
+        Transfer transferAfterCreate = convertToObject(httpResponseFromCreate.body(), Transfer.class);
+        String pathToTransferById = "/transfers/" + transferAfterCreate.getId();
+        GetMethod findCreatedTransferById = testServer.get(pathToTransferById, false);
+        HttpResponse httpResponseGetTransferById = testServer.execute(findCreatedTransferById);
+        assertEquals(200, httpResponseFromCreate.code());
+
+        Transfer transferInDb = convertToObject(httpResponseGetTransferById.body(), Transfer.class);
+        assertEquals(transfer.getSenderId(), transferInDb.getSenderId());
+        assertEquals(transfer.getReceiverId(), transferInDb.getReceiverId());
+        assertEquals(transfer.getAmount(), transferInDb.getAmount());
         assertNotNull(testServer.getApplication());
     }
 
     @Test
     public void testCreateTransferWithNotEnoughBalance() throws Exception {
         Transfer transfer = new Transfer(1, 3, BigDecimal.valueOf(9999999999L));
-        String jsonTransfer = new Gson().toJson(transfer);
-
-        PostMethod post = testServer.post("/transfers/create", jsonTransfer, false);
+        PostMethod post = testServer.post("/transfers/create", toJson(transfer), false);
         HttpResponse httpResponse = testServer.execute(post);
 
         assertEquals(HttpStatus.BAD_REQUEST_400, httpResponse.code());
@@ -73,9 +94,7 @@ public class AppControllersTest {
     @Test
     public void testCreateTransferToTheSameAccount() throws Exception {
         Transfer transfer = new Transfer(1, 1, BigDecimal.valueOf(100L));
-        String jsonTransfer = new Gson().toJson(transfer);
-
-        PostMethod post = testServer.post("/transfers/create", jsonTransfer, false);
+        PostMethod post = testServer.post("/transfers/create", toJson(transfer), false);
         HttpResponse httpResponse = testServer.execute(post);
 
         assertEquals(HttpStatus.BAD_REQUEST_400, httpResponse.code());
