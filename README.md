@@ -15,7 +15,7 @@ java -jar target/MoneyTransfer.jar
 ```
 ## REST API
 
-###Get accounts
+**Get accounts**
 
 **API call**
 
@@ -54,8 +54,8 @@ GET localhost:4567/accounts/
 ]
 ```
 
-###Create a new transfer
-
+**Create a new transfer**
+--
 **API call**
 
 Parameters:
@@ -83,8 +83,8 @@ POST localhost:4567/transfers/create
 }
 ```
 
-###Get all transfers
-
+**Get all transfers**
+--
 **API call**
 
 ```
@@ -110,8 +110,8 @@ GET localhost:4567/transfers/
 ]
 ```
 
-###Receive a certain transfer by Id
-
+**Receive a certain transfer by Id**
+--
 **API call**
 
 ```
@@ -129,8 +129,8 @@ GET localhost:4567/transfers/1
 }
 ```
 
-###Transfer between the same account
-
+**Transfer between the same account**
+--
 **API call**
 
 ```
@@ -152,8 +152,8 @@ POST localhost:4567/transfers/create
 }
 ```
 
-###Attempt to get a non-existent page
-
+**Attempt to get a non-existent page**
+--
 **API call**
 
 ```
