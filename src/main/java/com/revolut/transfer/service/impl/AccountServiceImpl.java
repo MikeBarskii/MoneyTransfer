@@ -16,6 +16,7 @@ public class AccountServiceImpl implements AccountService {
         this.accountDao = accountDao;
     }
 
+
     @Override
     public Collection<Account> getAccounts() throws SQLException {
         return accountDao.queryForAll();

@@ -58,11 +58,6 @@ public class BaseRestService implements RestService {
         Spark.stop();
     }
 
-    private ConnectionSource getConnectionSource() {
-        Injector injector = Guice.createInjector(new AppInjector());
-        return injector.getInstance(ConnectionSource.class);
-    }
-
     private void initInjectorInstances() {
         Injector injector = Guice.createInjector(new AppInjector());
         injector.getInstance(ConnectionSource.class);
@@ -73,4 +68,10 @@ public class BaseRestService implements RestService {
 
         injector.getInstance(ExceptionController.class);
     }
+
+    private ConnectionSource getConnectionSource() {
+        Injector injector = Guice.createInjector(new AppInjector());
+        return injector.getInstance(ConnectionSource.class);
+    }
+
 }

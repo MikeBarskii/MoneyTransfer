@@ -15,12 +15,13 @@ import spark.servlet.SparkApplication;
 
 import java.math.BigDecimal;
 
-import static com.revolut.transfer.util.JsonUtilInTest.convertToObject;
-import static com.revolut.transfer.util.JsonUtilInTest.toJson;
+import static com.revolut.transfer.util.JsonUtilInTest.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class AppControllersTest {
+    private static final int SPARK_DEFAULT_PORT = 4567;
+
     private static RestService restService;
 
     public static class ControllerTestSparkApplication implements SparkApplication {
@@ -32,8 +33,8 @@ public class AppControllersTest {
     }
 
     @ClassRule
-    public static SparkServer<ControllerTestSparkApplication> testServer =
-            new SparkServer<>(AppControllersTest.ControllerTestSparkApplication.class, 4567);
+    public static final SparkServer<ControllerTestSparkApplication> testServer =
+            new SparkServer<>(AppControllersTest.ControllerTestSparkApplication.class, SPARK_DEFAULT_PORT);
 
 
     @Test
@@ -87,7 +88,7 @@ public class AppControllersTest {
 
         assertEquals(HttpStatus.BAD_REQUEST_400, httpResponse.code());
         assertEquals("Account with id: " + transfer.getSenderId() + " doesn't have enough money: " + BigDecimal.valueOf(9999999999L),
-                new String(httpResponse.body()));
+                getJsonProperty(httpResponse.body(), "message"));
         assertNotNull(testServer.getApplication());
     }
 
@@ -98,7 +99,17 @@ public class AppControllersTest {
         HttpResponse httpResponse = testServer.execute(post);
 
         assertEquals(HttpStatus.BAD_REQUEST_400, httpResponse.code());
-        assertEquals("Can't send money to the same account!", new String(httpResponse.body()));
+        assertEquals("Can't send money to the same account!", getJsonProperty(httpResponse.body(), "message"));
+        assertNotNull(testServer.getApplication());
+    }
+
+    @Test
+    public void testGetNotFoundPage() throws Exception {
+        GetMethod get = testServer.get("/custom/", false);
+        HttpResponse httpResponse = testServer.execute(get);
+
+        assertEquals(HttpStatus.NOT_FOUND_404, httpResponse.code());
+        assertEquals("Not Found", getJsonProperty(httpResponse.body(), "message"));
         assertNotNull(testServer.getApplication());
     }
 

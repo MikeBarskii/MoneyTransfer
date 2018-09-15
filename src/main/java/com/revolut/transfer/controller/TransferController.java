@@ -21,7 +21,7 @@ public class TransferController {
             }, json());
 
             post("/create", (req, res) -> {
-                Transfer transfer = JsonUtil.convertToTransfer(req.body());
+                Transfer transfer = JsonUtil.convertToObject(req.body(), Transfer.class);
                 return transferService.createTransfer(transfer);
             }, json());
 

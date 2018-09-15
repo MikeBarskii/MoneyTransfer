@@ -6,7 +6,7 @@ import com.revolut.transfer.service.impl.BaseRestService;
 public class Application {
 
     public static void main(String[] args) {
-        RestService service = new BaseRestService(4040);
+        RestService service = new BaseRestService();
         service.start();
     }
 }

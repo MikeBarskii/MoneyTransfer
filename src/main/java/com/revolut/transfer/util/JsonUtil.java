@@ -1,10 +1,12 @@
 package com.revolut.transfer.util;
 
 import com.google.gson.Gson;
-import com.revolut.transfer.model.Transfer;
 import spark.ResponseTransformer;
 
 public class JsonUtil {
+    private JsonUtil() {
+    }
+
     private static String toJson(Object object) {
         return new Gson().toJson(object);
     }
@@ -13,7 +15,8 @@ public class JsonUtil {
         return JsonUtil::toJson;
     }
 
-    public static Transfer convertToTransfer(String json) {
-        return new Gson().fromJson(json, Transfer.class);
+    public static <T> T convertToObject(String json, Class<T> modelClass){
+        return new Gson().fromJson(json, modelClass);
     }
+
 }
