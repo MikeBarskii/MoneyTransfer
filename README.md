@@ -13,10 +13,8 @@ Run the application on port 4567
 ```
 java -jar target/MoneyTransfer.jar
 ```
-## REST API
-
 **Get accounts**
-
+--
 **API call**
 
 ```
